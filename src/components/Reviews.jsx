@@ -4,12 +4,11 @@ import { fetchReviews } from "services/HTTPRequest";
 
 const Reviews = () => {
   const [reviews, setReviews] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { movieId } = useParams()
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setIsLoading(true)
     fetchReviews(movieId)
       .then(({results}) => {
       setReviews(results);
@@ -17,30 +16,28 @@ const Reviews = () => {
     .catch(error => {
       setError(error);
     })
-    .finally(setIsLoading(false))
+    .finally(() => setIsLoading(false))
   }, [movieId]);
 
   if (isLoading) {
-    return <h1>Loading...</h1>
-  }
-
-  if (isLoading) {
-    return (
-      <h1>Loading...</h1>
-    )
+    return <p>Loading reviews.</p>
   }
 
   if (!reviews) {
     return 
   } 
 
-  if (reviews.length !== 0) {
+  if (error) {
+    new Error(error.message)
+  }
+
+  if (reviews && reviews.length > 0) {
     return (
     <ul>
       {reviews.map((review) => {
-        const { author_details: { username }, content} = review
+        const { author_details: { username }, content, id} = review
         return (
-          <li>
+          <li key={id}>
             <h3>{username}</h3>
             <p>{content}</p>
           </li>

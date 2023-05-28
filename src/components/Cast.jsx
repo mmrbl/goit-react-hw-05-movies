@@ -6,13 +6,11 @@ import noPhoto from "../services/noPhoto.png";
 
 const Cast = () => {
   const [casts, setCasts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { movieId } = useParams()
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setIsLoading(true)
-
     fetchCasts(movieId)
       .then(({cast}) => {
       setCasts(cast);
@@ -20,11 +18,19 @@ const Cast = () => {
     .catch(error => {
       setError(error);
     })
-    .finally(setIsLoading(false))
+    .finally(() => setIsLoading(false))
     
   }, [movieId]);
 
-  if (casts.length !== 0) {
+  if (isLoading) {
+    return <p>Loading casts...</p>;
+  }
+
+  if (error) {
+    console.log(error)
+  }
+
+  if (casts && casts.length !== 0) {
     return (
     <div>
       <ul>
@@ -51,3 +57,5 @@ const Cast = () => {
 }
 
 export default Cast
+
+

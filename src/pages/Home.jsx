@@ -5,12 +5,10 @@ import { fetchTrending } from "services/HTTPRequest";
 
 const Home = () => {
   const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setIsLoading(true)
-
     fetchTrending()
       .then(({results}) => {
       setData(results);
@@ -18,23 +16,26 @@ const Home = () => {
     .catch(error => {
       setError(error);
     })
-    .finally(setIsLoading(false))
+    .finally(() => setIsLoading(false))
   }, [])
 
   if (isLoading) {
     return <span>Loading...</span>
   }
 
+  if (error) {
+    console.log(error)
+  }
+
   return (
     <>
       <h1>Trending today</h1>
       <ul>
-        {data.map((result) => {
-        const {id, original_title, name, title} = result
+        {data.map(({id, original_title, name, title}) => {
         return (
           <li key={id}>
             <Link to={`movies/${id}`}>
-              <h2>{name ?? title ?? original_title}</h2>
+              <h2>{name || title || original_title}</h2>
             </Link> 
           </li>
         ) 

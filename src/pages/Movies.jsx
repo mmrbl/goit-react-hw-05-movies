@@ -9,7 +9,7 @@ const Movies = () => {
   const [error, setError] = useState(null);
   const [query, setQuery] = useState('');
 
-  function handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault()
 
     setIsLoading(true)
@@ -21,15 +21,19 @@ const Movies = () => {
     .catch(error => {
       setError(error);
     })
-    .finally(setIsLoading(false))
+    .finally(() => setIsLoading(false))
   }
 
-  function handleInputChange(e) {
+  const handleInputChange = (e) => {
     setQuery(e.target.value)
   }
 
   if (isLoading) {
     return <h1>Loading...</h1>
+  }
+
+  if (error) {
+    console.log(error)
   }
 
    return (
