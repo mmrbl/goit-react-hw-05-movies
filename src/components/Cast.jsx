@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchCasts } from 'services/HTTPRequest';
 import noPhoto from "../services/noPhoto.png";
+import { CastItem, CastList } from './Cast.styled';
 
 
 const Cast = () => {
@@ -33,18 +34,18 @@ const Cast = () => {
   if (casts && casts.length !== 0) {
     return (
     <div>
-      <ul>
+      <CastList>
         {casts.map((cast) => {
           const { character, name, id, profile_path } = cast
           return (
-            <li key={id}>
+            <CastItem key={id}>
               <img src={profile_path ? 'https://image.tmdb.org/t/p/w200' + profile_path : noPhoto} alt={name} />
               <h3>{name}</h3>
               <p>Character: {character}</p>
-            </li>
+            </CastItem>
           )
         })}
-      </ul>
+      </CastList>
     </div>
   )
   } else {

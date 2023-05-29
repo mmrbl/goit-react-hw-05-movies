@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
 import { fetchByID } from "services/HTTPRequest";
 import defaultImage from "../services/noimage.png";
+import { Button, Container, MovieInfo, CastList } from "./MovieDetails.styled";
+
 
 
 const MovieDetails = () => {
@@ -26,13 +28,11 @@ const MovieDetails = () => {
     .finally(() => setIsLoading(false))
   }, [movieId]);
 
-  const { name, title, original_title, overview, genres, poster_path, vote_average, success, status_message } = data
+  const { name, title, original_title, overview, genres, poster_path, vote_average, success} = data
 
   const goHome = () => {
     return backTo('/')
   }
-
-  console.log(data)
 
   if (!data) {
     return
@@ -43,8 +43,9 @@ const MovieDetails = () => {
   }
 
   if (success === false) {
+    console.log(data)
     return (
-      <p>{status_message}</p>
+      <p>We have no information about this fiml :c</p>
     )
   }
 
@@ -54,11 +55,11 @@ const MovieDetails = () => {
 
   return (
     <>
-      <button onClick={goHome} > &#8592; Go back</button>
+      <Button onClick={goHome} > &#8592; Go back</Button>
 
-      <div style={{display: 'flex'}}>
-        <img src={poster_path ? 'https://image.tmdb.org/t/p/w300' + poster_path : defaultImage} alt={name ?? title ?? original_title} />
-        <div>
+      <Container style={{ display: 'flex'}}>
+        <img src={poster_path ? 'https://image.tmdb.org/t/p/w300' + poster_path : defaultImage} alt={name || title || original_title} />
+        <MovieInfo>
           <h1>{name ?? title ?? original_title}</h1>
 
            { vote_average && vote_average !== 0 ?
@@ -76,9 +77,9 @@ const MovieDetails = () => {
             }) : <span>Unavaliable</span>
           }
           </ul>
-        </div>
+        </MovieInfo>
         
-      </div>
+      </Container>
       <h3>Additional information</h3>
       <ul>
         <li><Link to='cast'>Cast</Link></li>

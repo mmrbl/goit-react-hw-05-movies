@@ -35,7 +35,7 @@ const Home = () => {
         return (
           <li key={id}>
             <Link to={`movies/${id}`}>
-              <h2>{name || title || original_title}</h2>
+              <p>{name || title || original_title}</p>
             </Link> 
           </li>
         ) 

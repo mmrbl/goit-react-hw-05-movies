@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchByQuery } from "services/HTTPRequest";
+import { Button, Form, Input } from "./Movies.styled";
 
 const Movies = () => {
   const [data, setData] = useState([]);
@@ -12,9 +13,14 @@ const Movies = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
+    if (query === '') {
+      return alert('Input the movie name')
+    }
+
     setIsLoading(true)
 
-    fetchByQuery(query)
+    if (query !== '') {
+      fetchByQuery(query)
       .then(data => {
       setData(data.results);
     })
@@ -22,33 +28,37 @@ const Movies = () => {
       setError(error);
     })
     .finally(() => setIsLoading(false))
+      
+    } 
+
+    
   }
 
   const handleInputChange = (e) => {
-    setQuery(e.target.value)
+    setQuery(e.target.value.trim())
   }
 
   if (isLoading) {
     return <h1>Loading...</h1>
   }
-
+  
   if (error) {
     console.log(error)
   }
 
    return (
     <div>
-      <form action="" onSubmit={handleSubmit}>
-         <input type="text" name="film" value={query} onChange={handleInputChange} />
-        <button type="submit">Search</button>
-       </form>
+      <Form action="" onSubmit={handleSubmit}>
+         <Input type="text" name="film" value={query} onChange={handleInputChange} />
+        <Button type="submit">Search</Button>
+       </Form>
        <div>
       <ul>
            {data.map((movie) => {
              const {id, name, title, original_title} = movie
           return (
             <li key={id}>
-              <Link to={`${id}`}>{name ?? title ?? original_title}</Link>
+              <Link to={`${id}`}>{name || title || original_title}</Link>
             </li>
           )
         })}

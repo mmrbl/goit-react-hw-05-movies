@@ -2,9 +2,9 @@ import Home from "pages/Home";
 import MovieDetails from "pages/MovieDetails";
 import Movies from "pages/Movies";
 import { Route, Routes } from "react-router-dom";
+import Cast from "./Cast";
 import Layout from "./Layout";
 import Reviews from "./Reviews";
-import Cast from "./Cast"
 
 export const App = () => {
   return (
@@ -16,6 +16,7 @@ export const App = () => {
           <Route path="cast" element={<Cast />} />
           <Route path="reviews" element={<Reviews />} />
         </Route>
+        <Route path="*" element={<Home />} />
         </Route>
       </Routes>
   );
