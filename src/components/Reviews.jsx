@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { RotatingSquare } from 'react-loader-spinner';
 import { useParams } from "react-router-dom";
 import { fetchReviews } from "services/HTTPRequest";
+
 
 const Reviews = () => {
   const [reviews, setReviews] = useState([]);
@@ -20,7 +22,7 @@ const Reviews = () => {
   }, [movieId]);
 
   if (isLoading) {
-    return <p>Loading reviews.</p>
+    return <RotatingSquare color="orange"/>
   }
 
   if (!reviews) {

@@ -1,45 +1,65 @@
 
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { RotatingSquare } from 'react-loader-spinner';
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { fetchByQuery } from "services/HTTPRequest";
 import { Button, Form, Input } from "./Movies.styled";
 
 const Movies = () => {
+  const [prevQuery, setPrevQuery] = useState('');
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [query, setQuery] = useState('');
+  const location = useLocation()
+  const [searchParams, setSearchParams] = useSearchParams()  
+  
+  let query = searchParams.get('movie') ?? ''
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
 
-    if (query === '') {
-      return alert('Input the movie name')
-    }
+  const fetchData = () => {
 
-    setIsLoading(true)
-
-    if (query !== '') {
-      fetchByQuery(query)
+    fetchByQuery(query)
       .then(data => {
-      setData(data.results);
-    })
-    .catch(error => {
-      setError(error);
-    })
-    .finally(() => setIsLoading(false))
-      
-    } 
+        setData(data.results);
+      })
+      .catch(error => {
+        setError(error);
+      })
+      .finally(() => {
+        setIsLoading(false)
+        setPrevQuery(query)
+      });
+  
+};
 
-    
+  useEffect(() => {
+    fetchData();
+}, []);
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+
+      if (query === '') {
+      return alert('Input the movie name.')
   }
+
+  if (prevQuery === query) {
+    return
+  }
+  
+  setIsLoading(true)
+
+  fetchData();
+};
 
   const handleInputChange = (e) => {
-    setQuery(e.target.value.trim())
-  }
+    const inputedValue = e.target.value
+    if (inputedValue !== '') {
+          setSearchParams({movie: inputedValue})
+    } else {
+      setSearchParams({})
+    }
 
-  if (isLoading) {
-    return <h1>Loading...</h1>
   }
   
   if (error) {
@@ -49,21 +69,28 @@ const Movies = () => {
    return (
     <div>
       <Form action="" onSubmit={handleSubmit}>
-         <Input type="text" name="film" value={query} onChange={handleInputChange} />
+         <Input placeholder="Input the movie name here." type="text" name="film" value={query} onChange={handleInputChange} />
         <Button type="submit">Search</Button>
        </Form>
-       <div>
-      <ul>
+       
+         
+       {isLoading ? <RotatingSquare color="orange"/>: 
+         <div>
+         <ul>
            {data.map((movie) => {
              const {id, name, title, original_title} = movie
           return (
             <li key={id}>
-              <Link to={`${id}`}>{name || title || original_title}</Link>
+              <Link to={`${id}`} state={{ from: location }}>{name || title || original_title}</Link>
             </li>
           )
         })}
-      </ul>
-    </div>
+           </ul>
+           </div>
+         }
+
+      
+    
     </div>
   )
 }

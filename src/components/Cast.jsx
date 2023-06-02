@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import { fetchCasts } from 'services/HTTPRequest';
 import noPhoto from "../services/noPhoto.png";
 import { CastItem, CastList } from './Cast.styled';
+import { RotatingSquare } from 'react-loader-spinner';
+
 
 
 const Cast = () => {
@@ -24,7 +26,7 @@ const Cast = () => {
   }, [movieId]);
 
   if (isLoading) {
-    return <p>Loading casts...</p>;
+    return <RotatingSquare color="orange"/>
   }
 
   if (error) {

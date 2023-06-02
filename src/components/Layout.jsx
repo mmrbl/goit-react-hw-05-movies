@@ -1,3 +1,5 @@
+import { Suspense } from 'react'
+import { RotatingSquare } from 'react-loader-spinner'
 import { Outlet } from "react-router-dom"
 import { Container, NavContainer, StyledLink } from "./Layout.styled"
 
@@ -12,7 +14,9 @@ const Layout = () => {
       </NavContainer>
 
       <main>
-        <Outlet/>
+        <Suspense fallback={<RotatingSquare color='orange'/>}>
+          <Outlet />
+        </Suspense>
       </main>
     </Container>
   )

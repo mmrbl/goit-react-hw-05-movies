@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { RotatingSquare } from 'react-loader-spinner';
+import { Link, useLocation } from "react-router-dom";
 import { fetchTrending } from "services/HTTPRequest";
 
 
@@ -7,6 +8,7 @@ const Home = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const location = useLocation()
 
   useEffect(() => {
     fetchTrending()
@@ -19,10 +21,6 @@ const Home = () => {
     .finally(() => setIsLoading(false))
   }, [])
 
-  if (isLoading) {
-    return <span>Loading...</span>
-  }
-
   if (error) {
     console.log(error)
   }
@@ -30,17 +28,22 @@ const Home = () => {
   return (
     <>
       <h1>Trending today</h1>
+
+      {isLoading ? <RotatingSquare color="orange" /> : 
       <ul>
         {data.map(({id, original_title, name, title}) => {
         return (
           <li key={id}>
-            <Link to={`movies/${id}`}>
+            <Link to={`movies/${id}`} state={{ from: location }}>
               <p>{name || title || original_title}</p>
             </Link> 
           </li>
         ) 
       })}
       </ul>
+      }
+
+      
     </>
   )
 }
